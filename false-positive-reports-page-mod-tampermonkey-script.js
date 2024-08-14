@@ -23,7 +23,7 @@ var tamperMonkeyScriptVars_d09e64b3_e662_459f_a079_a070b7805508;
 
     let g_targetDate = null;
     let g_filterRuleIdNum = null;
-	skhdskjfhd kfhkjhf kjhfdjfd hf
+
 
 	const g_accountNotesGoogleSheetsId = '1h9h3y1FDPgLC2ndVDkXLl8Qk61Ldh-Jg8GPucJRyK1I';
 	const g_accountNotesGoogleSheetsUrlForCsvDownload = `https://docs.google.com/spreadsheets/d/${g_accountNotesGoogleSheetsId}/export?format=csv`;
@@ -535,8 +535,10 @@ var tamperMonkeyScriptVars_d09e64b3_e662_459f_a079_a070b7805508;
 	function addLinksToCustomerPages() {
         for(let customerPageUrlSpanElem of getAllCustomerPageUrlSpanElems()) {
             let customerPageUrl = customerPageUrlSpanElem.innerText;
+            let thElem = customerPageUrlSpanElem.closest(`th`);
+            let computedBackgroundColor = window.getComputedStyle(thElem).backgroundColor;
             customerPageUrlSpanElem.setAttribute('style', 
-                'position: relative; text-decoration: underline;');
+                `color:${computedBackgroundColor};position: relative; text-decoration: underline;filter: invert(1) grayscale(1) brightness(1.3) contrast(9000); mix-blend-mode: luminosity; opacity: 0.95;`);
             markElemAsHavingStyleAttribAddedByUs(customerPageUrlSpanElem);
             let aElem = document.createElement('a');
             aElem.href = customerPageUrl;
@@ -589,7 +591,7 @@ var tamperMonkeyScriptVars_d09e64b3_e662_459f_a079_a070b7805508;
             let aElem = elemToAddBackgroundColorTo.querySelector('a');
             if(aElem) {
                 aElem.setAttribute('style', 
-                    'color: black; font-weight: bold; text-decoration: underline;');
+                    `color: ${color}; font-weight: bold; text-decoration: underline; filter: invert(1) grayscale(1) brightness(1.3) contrast(9000); mix-blend-mode: luminosity; opacity: 0.95;`);
                 markElemAsHavingStyleAttribAddedByUs(aElem);
             }
             markElemAsHavingStyleAttribAddedByUs(elemToAddBackgroundColorTo);
