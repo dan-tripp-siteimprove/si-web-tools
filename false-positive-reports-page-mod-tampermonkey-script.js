@@ -652,6 +652,7 @@ var tamperMonkeyScriptVars_d09e64b3_e662_459f_a079_a070b7805508;
 			'en-IE': 'dd/MM/yyyy', /* eg. 05/07/2022 or 22/06/2022 https://my2.siteimprove.com/Auth/Direct?accountId=5009233&back=%2FSupportTools%2FA11YSupport%2FDecisionSupport */
 			'en-NZ': 'd/MM/yy', /* d or dd is unclear.  eg. 21/09/23 https://my2.siteimprove.com/Auth/Direct?personId=1057622587&accountId=6280755&back=%2FSupportTools%2FA11YSupport%2FDecisionSupport%3Flang%3Den-GB */
 			'en-US': 'M/d/yy', /* eg. 9/7/23, 9/21/23 - https://my2.us.siteimprove.com/Auth/Direct?personId=984774533&accountId=6290449&back=%2FSupportTools%2FA11YSupport%2FDecisionSupport%3Flang%3Den-US  */
+			'en-DK': 'dd/MM/yyyy', /* eg. 16/08/2024  https://my2.siteimprove.com/Auth/Direct?personId=268559035&accountId=6012388&back=%2FSupportTools%2FA11YSupport%2FDecisionSupport%3Flang%3Den-GB */
 			'es-ES': 'd/M/yy', /* eg. 1/9/23 https://my2.siteimprove.com/Auth/Direct?personId=735683955&accountId=6097427&back=%2FSupportTools%2FA11YSupport%2FDecisionSupport%3Flang%3Den-US */
 			'es-US': 'd/M/yyyy', /* eg. 7/11/2023, 13/7/2023  https://my2.siteimprove.com/Auth/Direct?personId=818062525&accountId=6253864&back=%2FSupportTools%2FA11YSupport%2FDecisionSupport%3Flang%3Den-US */
 			'fi-FI': 'd.M.yyyy', /* eg. 13.9.2023 - https://my2.siteimprove.com/Auth/Direct?personId=681201032&accountId=6049239&back=%2FSupportTools%2FA11YSupport%2FDecisionSupport%3Flang%3Den-GB */
