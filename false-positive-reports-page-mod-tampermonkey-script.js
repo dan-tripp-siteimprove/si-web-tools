@@ -124,17 +124,16 @@ var tamperMonkeyScriptVars_d09e64b3_e662_459f_a079_a070b7805508;
         return r;
     }
 
-function parseCsv(csvContents_) {
-    let rRows = scriptVars.papaParse.parse(csvContents_).data;
-    if(rRows.length === 0 || rRows[0][0] !== 'Account ID') {
-        throw new Error('error parsing CSV spreadsheet (header row not found)');
+    function parseCsv(csvContents_) {
+        let rRows = scriptVars.papaParse.parse(csvContents_).data;
+        if(rRows.length === 0 || rRows[0][0] !== 'Account ID') {
+            throw new Error('error parsing CSV spreadsheet (header row not found)');
+        }
+        for(let row of rRows) {
+            row.splice(0, row.length, ...row.map(x => x.replace(/\\n/g, '\n'))); // replace \n with a real newline 
+        }
+        return rRows;
     }
-    for(let row of rRows) {
-        row.splice(0, row.length, ...row.map(x => x.replace(/\\n/g, '\n'))); // replace \n with a real newline 
-    }
-    return rRows;
-}
-
 	
 	function hideThePagesOriginalBulkActionsButtons() {
 		let styleElem = document.createElement('style');
