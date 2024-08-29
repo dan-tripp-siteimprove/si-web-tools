@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      0.1
 // @description  .
-// @author       Dan Tripp (dtr@siteimprove.com) 
+// @author       Dan Tripp (dtr@siteimprove.com), Jeremy Gonzales (jgo@siteimprove.com) 
 // @match        *://*/*DecisionSupport*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 
@@ -142,8 +142,9 @@ var tamperMonkeyScriptVars_d09e64b3_e662_459f_a079_a070b7805508;
 	}
 
 	/* This function will call your arg function, but not to often.  It enforces a minimum 
-	time between calls.  This takes into account the time that a slow function function takes to 
-	run - that's why that arg is called "min inter-call delay" and not "max call period".  
+	time between calls.
+    "Time between calls" means the time between the end of call 1 and the 
+    start of call 2.  (Not between the start of call 1 and the start of call 2.)  So if your arg function is slow, then this function will call it less often.  That's why that arg is called "min inter-call delay" and not "max call period".  
 	This function has an arg "no call pending delay" which introduces a delay when the function 
 	is called either a) for the first time, or b) for the first time in a long time.  
 	This is useful because this function will be called from a certain mutation observer which 
@@ -786,10 +787,19 @@ var tamperMonkeyScriptVars_d09e64b3_e662_459f_a079_a070b7805508;
 		scriptVars.observer.disconnect();
 	}
 
+    function weShouldIgnoreMutationList(mutationList_) {
+        /* Here we ignore mutations on popups at the bottom of the page, and maybe more.  It's intended to ignore popups on two things: 1) the "previous page" / "next page" buttons, and 2) the "num items per page" popup.  This code fixes a bug where, before this code existed, this script would do a refresh when it was unnecessary, and consequently the vertical scroll position of the viewport would jump up a little.  it would jump up enough that it would put the "next page" button out of the viewport.  quite bad.  to work around it, I'd need to either click the "next page" button really fast, or temporarily turn off this script. 
+        This bug only happened on some accounts eg. 82447 and 6289812 in aug 2024.  I don't know why. */
+        let r = mutationList_.every(e => e.target?.getAttribute('data-component') === 'popover');
+        return r;
+    }
+
 	function initMutationObserver() {
 		function callback(mutationsList__, observer__) {
 			if(mutationsList__.length == 0) return; /* it's unclear if this is necessary. */
-			doOneRefreshMaybe();
+            if(!weShouldIgnoreMutationList(mutationsList__)) {
+                doOneRefreshMaybe();
+            }
 		};
 
 		scriptVars.observer = new MutationObserver(callback);
