@@ -1329,6 +1329,33 @@ var tamperMonkeyScriptVars_d09e64b3_e662_459f_a079_a070b7805508;
 		}
 	}
 
+    function selectCheckboxesAsPerJPMorgan_2024_09_10() {
+		console.log(new Date(), "started selectCheckboxesAsPerJPMorgan_2024_09_10");
+        const ruleIdNumsThatWeAreInterestedIn = new Set(["1", "4", "87", "61"]);
+        const custPageUrlPrefixesThatWeAreInterestedIn = new Set([
+            "https://am.jpmorgan.com/us/en/asset-management/institutional/insights/market-insights", 
+            "https://am.jpmorgan.com/us/en/asset-management/liq/resources/morgan-money/morgan-money-learn-more-carousel/", 
+            "https://am.jpmorgan.com/us/en/asset-management/mod/growth-equity-partners/", 
+            "https://am.jpmorgan.com/us/en/asset-management/mod/growth-equity-partners0/", 
+            "https://am.jpmorgan.com/us/en/asset-management/adv/insights/retirement-insights/defined-contribution/plan-sponsor-survey", 
+            ]);
+        let numInterestingCheckboxes = 0;
+        for(let ruleLinkElem of getAllRuleLinkElems()) {
+            const curRuleIdNum = getRuleIdNumFromUrl(ruleLinkElem.href);
+            if(!ruleIdNumsThatWeAreInterestedIn.has(curRuleIdNum)) continue;
+            let trElem = ruleLinkElem.closest('tr');
+            let customerPageUrlSpanElem = trElem.querySelector('th:nth-of-type(1) > div > div > span');
+            if(!customerPageUrlSpanElem) continue;
+            let customerPageUrl = customerPageUrlSpanElem.innerText;
+            let customerPageUrlStartsWithAnyPrefix = Array.from(custPageUrlPrefixesThatWeAreInterestedIn).some(prefix => customerPageUrl.startsWith(prefix));
+            if(!customerPageUrlStartsWithAnyPrefix) continue;
+            let checkbox = getCheckboxFromTrElem(trElem);
+            if(!checkbox.checked) checkbox.click();
+            numInterestingCheckboxes++;
+        }    
+		console.log(new Date(), `finished selectCheckboxesAsPerJPMorgan_2024_09_10.  number of checkboxes that we chose for selection (i.e. we selected them if they weren't selected already, and we left them alone if not): ${numInterestingCheckboxes}`);
+    }
+
 	function addKeyListeners() {
 		function listener(e__) {
 			if(e__.altKey && e__.ctrlKey && e__.key === 'z') {
@@ -1337,6 +1364,8 @@ var tamperMonkeyScriptVars_d09e64b3_e662_459f_a079_a070b7805508;
 				alert("That shortcut does nothing.  Did you mean Ctrl+Alt+z?  You pressed Ctrl+Alt+d.");
 			} else if(e__.altKey && e__.ctrlKey && e__.key === 'i') {
 				selectAllRowsForTheOldElementIdsAreNotUniqueRule();
+			} else if(e__.altKey && e__.ctrlKey && e__.key === 'j') {
+				selectCheckboxesAsPerJPMorgan_2024_09_10();
 			} 
 			
 			if(0) {
