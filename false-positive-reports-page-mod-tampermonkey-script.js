@@ -661,6 +661,7 @@ var tamperMonkeyScriptVars_d09e64b3_e662_459f_a079_a070b7805508;
 			'nl-NL':  'dd-MM-yyyy', /* eg. "04-09-2023" - https://my2.siteimprove.com/Auth/Direct?personId=257718760&accountId=6005070&back=%2FSupportTools%2FA11YSupport%2FDecisionSupport%3Flang%3Den-US */
 			'sv-SE': 'yyyy-MM-dd', /* eg. 2023-09-14 - https://my2.siteimprove.com/Auth/Direct?personId=47210236&accountId=7845&back=%2FSupportTools%2FA11YSupport%2FDecisionSupport%3Flang%3Den-US */
 			'is-IS': 'd.M.yyyy', /* eg. 22.9.2022 1.11.2022  - https://my2.siteimprove.com/Auth/Direct?personId=386268974&accountId=6020043&back=%2FSupportTools%2FA11YSupport%2FDecisionSupport%3Flang%3Den-US */
+			'et-EE': 'dd.MM.yy', /* eg. 04.09.24 - https://my2.siteimprove.com/Auth/Direct?personId=774761201&accountId=6168367&back=%2FSupportTools%2FA11YSupport%2FDecisionSupport%3Flang%3Den-US */
 		};
 		let dateFormat = localeToDateFormat[locale];
 		if(!dateFormat) throw new Error(`local "${locale}" not found.`);
