@@ -128,7 +128,53 @@ var tamperMonkeyScriptVars_1fd969cb_2961_48f5_8498_27960a3aaeb0;
 		return rootElem;
 	}
 
+	function isPageLangEnglish() {
+		let locale = document.documentElement.getAttribute('lang');
+		let r = locale === 'en';
+		return r;
+	}
+
+    function switchToPageLangEnglishIfNecessary() {
+        if(!isPageLangEnglish()) {
+            let parsedUrl = new URL(window.location.href);
+            parsedUrl.searchParams.set('lang', 'en-US');
+            let newUrl = parsedUrl.toString();        
+            showMsgAsModal(`Switching language to English...`);
+            window.location.assign(newUrl);
+        }
+    }
+
+    function showMsgAsModal(stringToShow_) {
+        let stringToShow = escapeForInlineHtml(stringToShow_).replace(/\n/g, '<br>');
+        let modalShadowHost = document.createElement('div');
+        modalShadowHost.attachShadow({mode: 'open'}).innerHTML = 
+            `<dialog style="width: 50vw; margin: auto; position: fixed; 
+                    top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                    border: 3px solid #888; box-shadow: 2px 2px 10px #888888; 
+                    display: flex; flex-direction: column; justify-content: center; 
+                    overflow: auto;">
+                <form method="dialog" style="display: flex; flex-direction: column; 
+                        align-items: center; margin: 0;">
+                    <p style="align-self: flex-start; margin: 10px 0;">${stringToShow}</p>
+                    <button style="text-align: center; margin-top: auto;">Close</button>
+                </form>                
+            </dialog>`;
+        document.body.appendChild(modalShadowHost);
+        let modal = modalShadowHost.shadowRoot.querySelector(`dialog`);
+        let closeButton = modalShadowHost.shadowRoot.querySelector('button');
+        closeButton.addEventListener('click', () => {modalShadowHost.remove();});
+        modal.showModal();
+    }
+
+    function escapeForInlineHtml(str_) {
+        var div = document.createElement('div');
+        div.appendChild(document.createTextNode(str_));
+        let r = div.innerHTML;
+        return r;
+    }
+
 	async function runMain() {
+        switchToPageLangEnglishIfNecessary(); // this won't return if it did anything.
 		createMenu();
 		schedulePeriodicRefreshes();
 	}
