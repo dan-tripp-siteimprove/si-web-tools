@@ -704,7 +704,7 @@ var tamperMonkeyScriptVars_d09e64b3_e662_459f_a079_a070b7805508;
 	}
 
 	/* pendo popups have included messages about: 
-	- AI remeditate (jan 2024) 
+	- AI remediate (jan 2024) 
 	- product feedback via pendo (late 2023) */
 	function hidePendoPopup() {
 		document.querySelector('#pendo-base')?.remove();
@@ -770,10 +770,10 @@ var tamperMonkeyScriptVars_d09e64b3_e662_459f_a079_a070b7805508;
     When I select many rules in the standard filter, the filter 
     clear button contains the names of those many rules, which amounts to a long string.  
     So the button becomes wider than my screen width.  It causes a horizontal scroll bar 
-    to appear and make the page hard to use.  So here we replace that long content with "...". 
+    to appear and makes the page hard to use.  So here we replace that long content with "...". 
 	We do it one time via a <style> element (instead of on every refresh, with code) because 
 	these elements seem to be recreated every time I click a checkbox.  So back when we did 
-	this on every refresh, there would be a "flash of unmodified content".  This flash 
+	this on every refresh of ours, there would be a "flash of unmodified content".  This flash 
 	was particularly annoying because it would cause the very long string to reappear during 
 	that flash and hence horizontal scrollbars would appear. */
     function truncateActiveFilterButtons() {
