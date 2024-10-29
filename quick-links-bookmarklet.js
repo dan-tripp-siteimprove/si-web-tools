@@ -400,9 +400,9 @@ var bookmarkletVars_0eed7a59_cf6e_4254_aa0a_798a6332b6f1;
 
 	function getDatacenterWhenCurPageIsAPlatformPage() {
 		let url = window.location.href;
-		if(url.includes('https://my2.siteimprove.com')) {
+		if(/^https?:\/\/my2\.siteimprove\.com/.test(url)) {
 			return 'eu';
-		} else if(url.includes('https://my2.us.siteimprove.com')) {
+		} else if(/^https?:\/\/my2\.us\.siteimprove\.com/.test(url)) {
 			return 'us';
 		} else {
 			throw new Error('failed to get datacenter');
