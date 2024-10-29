@@ -1204,14 +1204,23 @@ var tamperMonkeyScriptVars_d09e64b3_e662_459f_a079_a070b7805508;
 	}
 	
 	async function runMain() {
-		await miscInit();
-		doOneTimeMods();
-		createMenu();
+        switchToPageLangEnglishIfNecessary(); // this won't return if it did anything.
+        await miscInit();
+        doOneTimeMods();
+        createMenu();
         showNotesForAccount();
         addBeforeunloadListener();
-		initMutationObserver();
-		doOneRefreshMaybe();
+        initMutationObserver();
+        doOneRefreshMaybe();
 	}
+
+    function switchToPageLangEnglishIfNecessary() {
+        if(!isPageLangEnglish()) {
+            let newUrl = window.location.href + '?lang=en-US';
+            showMsgAsModal(`Switching language to English...`);
+            window.location.assign(newUrl);
+        }
+    }
 
 	function doOneTimeMods() {
 		hideThePagesOriginalBulkActionsButtons();
