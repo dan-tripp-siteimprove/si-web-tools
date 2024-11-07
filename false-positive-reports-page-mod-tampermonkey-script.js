@@ -662,6 +662,7 @@ var tamperMonkeyScriptVars_d09e64b3_e662_459f_a079_a070b7805508;
 			'sv-SE': 'yyyy-MM-dd', /* eg. 2023-09-14 - https://my2.siteimprove.com/Auth/Direct?personId=47210236&accountId=7845&back=%2FSupportTools%2FA11YSupport%2FDecisionSupport%3Flang%3Den-US */
 			'is-IS': 'd.M.yyyy', /* eg. 22.9.2022 1.11.2022  - https://my2.siteimprove.com/Auth/Direct?personId=386268974&accountId=6020043&back=%2FSupportTools%2FA11YSupport%2FDecisionSupport%3Flang%3Den-US */
 			'et-EE': 'dd.MM.yy', /* eg. 04.09.24 - https://my2.siteimprove.com/Auth/Direct?personId=774761201&accountId=6168367&back=%2FSupportTools%2FA11YSupport%2FDecisionSupport%3Flang%3Den-US */
+			'es-PR': 'MM/dd/yy', /* eg. 05/02/23, 10/22/24 - https://my2.siteimprove.com/Auth/Direct?accountId=53018&back=%2FSupportTools%2FA11YSupport%2FDecisionSupport */
 		};
 		let dateFormat = localeToDateFormat[locale];
 		if(!dateFormat) throw new Error(`local "${locale}" not found.`);
@@ -791,7 +792,7 @@ var tamperMonkeyScriptVars_d09e64b3_e662_459f_a079_a070b7805508;
     function weShouldIgnoreMutationList(mutationList_) {
         /* Here we ignore mutations on popups at the bottom of the page, and maybe more.  It's intended to ignore popups on two things: 1) the "previous page" / "next page" buttons, and 2) the "num items per page" popup.  This code fixes a bug where, before this code existed, this script would do a refresh when it was unnecessary, and consequently the vertical scroll position of the viewport would jump up a little.  it would jump up enough that it would put the "next page" button out of the viewport.  quite bad.  to work around it, I'd need to either click the "next page" button really fast, or temporarily turn off this script. 
         This bug only happened on some accounts eg. 82447 and 6289812 in aug 2024.  I don't know why. */
-        let r = mutationList_.every(e => e.target?.getAttribute('data-component') === 'popover');
+        let r = mutationList_.every(e => e.type === 'childList' && e.target?.getAttribute('data-component') === 'popover');
         return r;
     }
 
