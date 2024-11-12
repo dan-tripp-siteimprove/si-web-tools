@@ -34,8 +34,9 @@ var bookmarkletVars_0eed7a59_cf6e_4254_aa0a_798a6332b6f1;
 	}
 
 	function getCustomerPageUrlWhenWeAreOnAPlatformPageReport() {
-		let r = document.querySelector('.inspector-meta a').href;
-		if(!r) throw new Error();
+		let r = document.querySelectorAll('.inspector-info a');
+		if(r.length < 1) throw new Error();
+		r = r[0].href;
 		return r;
 	}
 
