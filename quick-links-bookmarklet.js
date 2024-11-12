@@ -4,9 +4,8 @@ var bookmarkletVars_0eed7a59_cf6e_4254_aa0a_798a6332b6f1;
 
 	/* 
 
-	- test plan:
-		- both datacenters 
-		- chrome, ff 
+	This is meant as a bookmarklet.  It will also run under tampermonkey - under which it will run on page load - which is useful for creating a fast edit-debug cycle.  
+
 
 	to do: "open in new tab" icons: hover, focus, and active styles.  and disabled. 
 		- DON'T DO b/c these rely on adding a "style" element and that gets blocked 
