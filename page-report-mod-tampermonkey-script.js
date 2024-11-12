@@ -109,11 +109,11 @@ var tamperMonkeyScriptVars_1fd969cb_2961_48f5_8498_27960a3aaeb0;
 			innerHtml += `<span style="font-size: 2em; background-color: red; color: white">
 				"Last checked" date is old</span>`;
 		} else {
-			innerHtml += '(all good)';
+			innerHtml += '✓';
 		}
-		innerHtml += `&nbsp;&nbsp;
+		innerHtml += `&nbsp;
 				<button name="close" title="close" aria-label="close" 
-						style="float: right; margin: 0.2vw; z-index: 10; font-size: 1.0vw ; 
+						style="float: right; margin: 0.2vw; z-index: 10; font-size: 0.7vw ; 
 							border-width: 0.3vw; padding: 0.3vw; margin: 0.1vw" 
 					>✖</button>
 				<br>
