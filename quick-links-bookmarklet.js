@@ -32,14 +32,6 @@ var bookmarkletVars_0eed7a59_cf6e_4254_aa0a_798a6332b6f1;
 		return r;
 	}
 
-	function getCustomerPageUrlWhenWeAreOnAPlatformPageReport() {
-		let r = document.querySelectorAll('.inspector-info a');
-		if(r.length < 1) throw new Error();
-		r = r[0].href;
-		return r;
-	}
-
-
 	function getAccountIdWhenWeAreOnPlatformPageThatIsNotAPageReport() {
 		let r = document.querySelector('html head meta[name="accountId"]')?.getAttribute('value');
 		return r;
@@ -203,7 +195,6 @@ var bookmarkletVars_0eed7a59_cf6e_4254_aa0a_798a6332b6f1;
 			if(areWeOnAPlatformPageReport()) {
 				accountId = getAccountIdWhenWeAreOnAPlatformPageReport();
 				qaSiteId = getSiteIdWhenWeAreOnAPlatformPageReport(currentUrl);
-				customerPageUrl = getCustomerPageUrlWhenWeAreOnAPlatformPageReport();
 			} else if(areWeOnASupportToolPage()) {
 				accountId = getAccountIdWhenWeAreOnASupportToolPage();
 				qaSiteId = getSiteIdWhenWeAreOnASupportToolPage();
