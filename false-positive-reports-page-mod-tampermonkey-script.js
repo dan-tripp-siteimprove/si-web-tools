@@ -538,15 +538,13 @@ var tamperMonkeyScriptVars_d09e64b3_e662_459f_a079_a070b7805508;
 	function addLinksToCustomerPages() {
         for(let customerPageUrlSpanElem of getAllCustomerPageUrlSpanElems()) {
             let customerPageUrl = customerPageUrlSpanElem.innerText;
-            let thElem = customerPageUrlSpanElem.closest(`th`);
-            let computedBackgroundColor = window.getComputedStyle(thElem).backgroundColor;
-            customerPageUrlSpanElem.setAttribute('style', 
-                `color:${computedBackgroundColor};position: relative; text-decoration: underline;filter: invert(1) grayscale(1) brightness(1.3) contrast(9000); mix-blend-mode: luminosity; opacity: 0.95;`);
+            customerPageUrlSpanElem.setAttribute('style', `position: relative; text-decoration: underline;`);
             markElemAsHavingStyleAttribAddedByUs(customerPageUrlSpanElem);
             let aElem = document.createElement('a');
             aElem.href = customerPageUrl;
             aElem.setAttribute('style', `position: absolute; left: 0; top: 0; right: 0; bottom: 0;`);
             markElemAsAddedByUs(aElem);
+            /* doing this w/ a new <a> element and absolute positioning b/c I want it to be easy to undo all our mods to the DOM.  so far our mods take two forms: adding a style attribute and adding an element.  doing it this way fits into those categories.  if instead we did this by turning the <span> into an <a>, or adding an <a> then putting the text content into that <a>, that would be more complicated to undo.  I don't know how important this is, for us to undo things.  because the page we're modding is built with react and it's probably rebuilding itself all the time. */ 
             customerPageUrlSpanElem.appendChild(aElem);
         }
     }
@@ -560,7 +558,7 @@ var tamperMonkeyScriptVars_d09e64b3_e662_459f_a079_a070b7805508;
 		return r;
 	}
 
-	function addCustomerPageUrlColorCoding() {
+	function addCustomerPageUrlColumnColorCoding() {
 		let customerPageUrlToColor = {};
 		let customerPageUrlsThatHaveBrokenRuns = new Set();
 		let allCustomerPageUrlSpanElems = getAllCustomerPageUrlSpanElems();
@@ -583,21 +581,31 @@ var tamperMonkeyScriptVars_d09e64b3_e662_459f_a079_a070b7805508;
 		}
 		for(let customerPageUrlSpanElem of allCustomerPageUrlSpanElems) {
 			let customerPageUrl = customerPageUrlSpanElem.innerText;
-			let color = customerPageUrlToColor[customerPageUrl];
+			let backgroundColor = customerPageUrlToColor[customerPageUrl];
 			let elemToAddBackgroundColorTo = ancestor(customerPageUrlSpanElem, 3);
-			if(customerPageUrlsThatHaveBrokenRuns.has(customerPageUrl)) {
-				elemToAddBackgroundColorTo.style.background = 
-					`repeating-linear-gradient(45deg, transparent, transparent 10px, ${color} 10px, ${color} 20px)`;
-			} else {
-				elemToAddBackgroundColorTo.style.backgroundColor = color;
-			}
-            let aElem = elemToAddBackgroundColorTo.querySelector('a');
-            if(aElem) {
-                aElem.setAttribute('style', 
-                    `color: ${color}; font-weight: bold; text-decoration: underline; filter: invert(1) grayscale(1) brightness(1.3) contrast(9000); mix-blend-mode: luminosity; opacity: 0.95;`);
-                markElemAsHavingStyleAttribAddedByUs(aElem);
-            }
             markElemAsHavingStyleAttribAddedByUs(elemToAddBackgroundColorTo);
+            let stripes = customerPageUrlsThatHaveBrokenRuns.has(customerPageUrl);
+			if(stripes) {
+				elemToAddBackgroundColorTo.style.background = 
+					`repeating-linear-gradient(45deg, transparent, transparent 10px, ${backgroundColor} 10px, ${backgroundColor} 20px)`;
+			} else {
+				elemToAddBackgroundColorTo.style.backgroundColor = backgroundColor;
+			}
+            /* here we modify both the link that the page originally contained (i.e. the link to the page report) and the link that this script added (i.e. the link to the live page). */
+            for(let a of elemToAddBackgroundColorTo.querySelectorAll('a')) {
+                /* this is messy b/c of the way we added our <a> (to the cust live page) i.e. with absolute positioning.  so if we edited the style attrib of our <a> then it wouldn't do anything, because that <a> has no text content.  it's just a clickable area.  the text content - what /looks/ like the link text - is in the <span> parent of it. */
+                let elemWithTheText = a.parentElement.tagName === "SPAN" ? a.parentElement : a;
+                elemWithTheText.style.fontWeight = 'bold';
+                elemWithTheText.style.textDecoration = 'underline';
+                elemWithTheText.style.color = backgroundColor;
+                elemWithTheText.style.filter = 'invert(1) grayscale(1) brightness(1.3) contrast(9000)';
+                // unnecessary? elemWithTheText.style.mixBlendMode = 'luminosity';
+                // unnecessary?  elemWithTheText.style.opacity = '0.95';
+                if(stripes) {
+                    elemWithTheText.style.textShadow = '2px 2px 5px rgba(255, 255, 255, 1.0)'; // this won't really be white.  it will be black, b/c of the "invert" above. 
+                }
+                markElemAsHavingStyleAttribAddedByUs(a);
+            }
 		}
 	}
 
@@ -795,9 +803,9 @@ var tamperMonkeyScriptVars_d09e64b3_e662_459f_a079_a070b7805508;
 		removeListenersAddedByUs();
 
 		addDateColumnColorCoding();
-		addCustomerPageUrlColorCoding();
+        addLinksToCustomerPages(); /* calling this before addCustomerPageUrlColorCoding() b/c the latter modifies DOM added by the former.  */ 
+		addCustomerPageUrlColumnColorCoding();
         addSiteColorCoding();
-        addLinksToCustomerPages();
         addReviewerForRuleColorCoding();
         addRuleFilterButtons();
         hideTableRowsAccordingToRuleFilter();
