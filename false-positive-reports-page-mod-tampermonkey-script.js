@@ -295,8 +295,8 @@ var tamperMonkeyScriptVars_d09e64b3_e662_459f_a079_a070b7805508;
 				'th:nth-of-type(1) > div > div > a');
 			if(!pageReportAnchorElem) {
 				/* This will happen if "affected pages" == 0.  i.e. there will be no page report URL.  
-				We use the page report URL to get the site ID, and then to create the supporttool 
-				link.  */
+				We use that page report URL to get the site ID, and then to create the supporttool 
+				link. */
 				continue;
 			}
 			let pageReportUrl = pageReportAnchorElem.href;
@@ -310,9 +310,10 @@ var tamperMonkeyScriptVars_d09e64b3_e662_459f_a079_a070b7805508;
 			/* ^^ making this td elem the click target instead of the div is so that we can 
 			handle it when this cell has no inner text i.e. it's visually empty.  that happens when the 
 			site has been deleted and/or soft-deleted.  IDK the difference. */
-			popupClickTargetElem.setAttribute('style', 
-				'background-color: #f0f0f0; cursor: pointer; border-radius: 12px;');
-			markElemAsHavingStyleAttribAddedByUs(popupClickTargetElem);
+
+            popupClickTargetElem.style.cursor = 'pointer';
+            popupClickTargetElem.style.textDecoration = 'underline';
+            markElemAsHavingStyleAttribAddedByUs(popupClickTargetElem);
 
 			let popupMenuDiv = document.createElement('div');
 			markElemAsAddedByUs(popupMenuDiv);
@@ -381,6 +382,12 @@ var tamperMonkeyScriptVars_d09e64b3_e662_459f_a079_a070b7805508;
 
 	function getAllCustomerPageUrlSpanElems() {
 		let r = getTbodyOfTable().querySelectorAll('th:nth-of-type(1) > div > div > span');
+		r = [...r];
+		return r;
+	}
+
+	function getAllSiteNameSpanElems() {
+		let r = getTbodyOfTable().querySelectorAll('td:nth-of-type(3) > div > div > span');
 		r = [...r];
 		return r;
 	}
@@ -594,6 +601,45 @@ var tamperMonkeyScriptVars_d09e64b3_e662_459f_a079_a070b7805508;
 		}
 	}
 
+	function addSiteColorCoding() {
+		let siteNameToColor = {}; /* this function's idea of a site's "name" is sloppy.  we get it from the inner text of some span element.  it probably contains both the site's proper "name" and the site's base URL.  it doesn't matter. */
+		let siteNamesThatHaveBrokenRuns = new Set();
+		let allSiteNameSpanElems = getAllSiteNameSpanElems();
+		let prevSiteName = null;
+		for(let siteNameSpanElem of allSiteNameSpanElems) {
+			let trElem = siteNameSpanElem.closest('tr');
+			if(!isRowVisibleAccordingToOurRuleFilter(trElem)) continue;
+			let siteName = siteNameSpanElem.innerText;
+
+			if(prevSiteName !== null && siteName !== prevSiteName 
+					&& siteName in siteNameToColor) {
+				siteNamesThatHaveBrokenRuns.add(siteName);
+			}
+			prevSiteName = siteName;
+
+			if(!(siteName in siteNameToColor)) {
+				let nextColor = COLORS[Object.keys(siteNameToColor).length % COLORS.length];
+				siteNameToColor[siteName] = nextColor;
+			}
+		}
+		for(let siteNameSpanElem of allSiteNameSpanElems) {
+			let siteName = siteNameSpanElem.innerText;
+			let color = siteNameToColor[siteName];
+			let elemToAddBackgroundColorTo = ancestor(siteNameSpanElem, 3);
+			if(siteNamesThatHaveBrokenRuns.has(siteName)) {
+				elemToAddBackgroundColorTo.style.background = 
+					`repeating-linear-gradient(45deg, transparent, transparent 10px, ${color} 10px, ${color} 20px)`;
+			} else {
+				elemToAddBackgroundColorTo.style.backgroundColor = color;
+			}
+            markElemAsHavingStyleAttribAddedByUs(elemToAddBackgroundColorTo);
+
+            siteNameSpanElem.setAttribute('style', 
+                `color: ${color}; font-weight: bold; filter: invert(1) grayscale(1) brightness(1.3) contrast(9000); mix-blend-mode: luminosity; opacity: 0.95;`);
+            markElemAsHavingStyleAttribAddedByUs(siteNameSpanElem);            
+		}
+	}
+
 	function assert(bool_) {
 		if(!bool_) throw new Error('assertion failed');
 	}
@@ -750,6 +796,7 @@ var tamperMonkeyScriptVars_d09e64b3_e662_459f_a079_a070b7805508;
 
 		addDateColumnColorCoding();
 		addCustomerPageUrlColorCoding();
+        addSiteColorCoding();
         addLinksToCustomerPages();
         addReviewerForRuleColorCoding();
         addRuleFilterButtons();
@@ -1210,7 +1257,7 @@ var tamperMonkeyScriptVars_d09e64b3_e662_459f_a079_a070b7805508;
         doOneTimeMods();
         createMenu();
         showNotesForAccount();
-        addBeforeunloadListener();
+        addBeforeUnloadListener();
         initMutationObserver();
         doOneRefreshMaybe();
 	}
@@ -1228,7 +1275,7 @@ var tamperMonkeyScriptVars_d09e64b3_e662_459f_a079_a070b7805508;
         truncateActiveFilterButtons();
 	}
 
-    function addBeforeunloadListener() {
+    function addBeforeUnloadListener() {
 		window.addEventListener('beforeunload', function (event) {
 			if(!isOurRuleFilterOn() && !isTheOriginalRuleFilterOn()) return;
 			showMsgAsModal(`Rule filter(s) are on, so that's why you were asked if you `+
