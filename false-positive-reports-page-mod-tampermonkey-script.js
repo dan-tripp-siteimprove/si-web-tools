@@ -594,15 +594,18 @@ var tamperMonkeyScriptVars_d09e64b3_e662_459f_a079_a070b7805508;
             /* here we modify both the link that the page originally contained (i.e. the link to the page report) and the link that this script added (i.e. the link to the live page). */
             for(let a of elemToAddBackgroundColorTo.querySelectorAll('a')) {
                 /* this is messy b/c of the way we added our <a> (to the cust live page) i.e. with absolute positioning.  so if we edited the style attrib of our <a> then it wouldn't do anything, because that <a> has no text content.  it's just a clickable area.  the text content - what /looks/ like the link text - is in the <span> parent of it. */
-                let elemWithTheText = a.parentElement.tagName === "SPAN" ? a.parentElement : a;
-                elemWithTheText.style.fontWeight = 'bold';
+                let aIsTheLinkWeAdded = a.parentElement.tagName === "SPAN";
+                let elemWithTheText = aIsTheLinkWeAdded ? a.parentElement : a;
+                if(!aIsTheLinkWeAdded) {
+                    elemWithTheText.style.fontWeight = 'bold';
+                }
                 elemWithTheText.style.textDecoration = 'underline';
                 elemWithTheText.style.color = backgroundColor;
                 elemWithTheText.style.filter = 'invert(1) grayscale(1) brightness(1.3) contrast(9000)';
                 // unnecessary? elemWithTheText.style.mixBlendMode = 'luminosity';
                 // unnecessary?  elemWithTheText.style.opacity = '0.95';
                 if(stripes) {
-                    elemWithTheText.style.textShadow = '2px 2px 5px rgba(255, 255, 255, 1.0)'; // this won't really be white.  it will be black, b/c of the "invert" above. 
+                    elemWithTheText.style.textShadow = '2px 2px 5px rgba(255, 255, 255, 1.0)'; // this won't really be white.  it will be something else, probably, b/c of the "invert" above.  I don't know what I'm doing. 
                 }
                 markElemAsHavingStyleAttribAddedByUs(a);
             }
